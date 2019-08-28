@@ -498,6 +498,12 @@ class CloudStackNode(Node):
         """
         return self.driver.ex_stop(node=self)
 
+    def ex_force_stop(self):
+        """
+        Force stops a running virtual machine.
+        """
+        return self.driver.ex_stop(node=self, force=True)
+
 
 class CloudStackAddress(object):
     """
@@ -1713,17 +1719,18 @@ class CloudStackNodeDriver(CloudStackDriverMixIn, NodeDriver):
                                   method='GET')
         return res['virtualmachine']['state']
 
-    def ex_stop(self, node):
+    def ex_stop(self, node, force=False):
         """
         Stops/Suspends a running virtual machine
 
         :param node: Node to stop.
+        :param force: Force stop node.
         :type node: :class:`CloudStackNode`
 
         :rtype: ``str``
         """
         res = self._async_request(command='stopVirtualMachine',
-                                  params={'id': node.id},
+                                  params={'id': node.id, 'forced': force},
                                   method='GET')
         return res['virtualmachine']['state']
 
